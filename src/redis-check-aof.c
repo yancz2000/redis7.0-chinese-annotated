@@ -333,7 +333,7 @@ int checkSingleAof(char *aof_filename, char *aof_filepath, int last_file, int fi
  * 1. The file is an old style RDB-preamble AOF
  * 2. The file is a BASE AOF in Multi Part AOF
  * */
-/* 判断是否是混合持久化 AOF 类型或者是增量 AOF 的 base 文件，根据前5个字符是否为 REDIS */
+/* 判断是否是混合持久化 AOF 类型或者是增量 AOF 的 base 文件，根据前 5 个字符是否为 REDIS */
 int fileIsRDB(char *filepath) {
     FILE *fp = fopen(filepath, "r");
     if (fp == NULL) {
@@ -453,13 +453,13 @@ void checkMultiPartAof(char *dirpath, char *manifest_filepath, int fix) {
     int ret;
 
     printf("Start checking Multi Part AOF\n");
-	/* 从文件中加载 AOF */    
+    /* 从文件中加载 AOF */    
     aofManifest *am = aofLoadManifestFromFile(manifest_filepath);
 
     if (am->base_aof_info) total_num++;
     if (am->incr_aof_list) total_num += listLength(am->incr_aof_list);
 
-    /* 检查 BASE   AOF */    
+    /* 检查 BASE AOF */    
     if (am->base_aof_info) {
         sds aof_filename = am->base_aof_info->file_name;
         sds aof_filepath = makePath(dirpath, aof_filename);
@@ -481,7 +481,7 @@ void checkMultiPartAof(char *dirpath, char *manifest_filepath, int fix) {
         sdsfree(aof_filepath);
     }
 
-    /* 检查 INCR   AOFs */    
+    /* 检查 INCR AOFs */    
     if (listLength(am->incr_aof_list)) {
         listNode *ln;
         listIter li;
@@ -540,6 +540,7 @@ int redis_check_aof_main(int argc, char **argv) {
     char temp_filepath[PATH_MAX + 1];
     char *dirpath;
     int fix = 0;
+
     /* 根据入参数量，做相应分支处理 */
     if (argc < 2) {
         goto invalid_args;
@@ -574,7 +575,7 @@ int redis_check_aof_main(int argc, char **argv) {
     dirpath = dirname(temp_filepath);
 
     /* Select the corresponding verification method according to the input file type. */
-	/* 获取 AOF 的类型，然后根据类型进入不同的分支处理函数
+    /* 获取 AOF 的类型，然后根据类型进入不同的分支处理函数
      * 类型有 增量 AOF、RESP 和混合持久化 */    
     input_file_type type = getInputFileType(filepath);
     switch (type) {
