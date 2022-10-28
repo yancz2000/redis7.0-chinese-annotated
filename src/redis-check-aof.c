@@ -241,7 +241,7 @@ int checkSingleAof(char *aof_filename, char *aof_filepath, int last_file, int fi
     char buf[2];
 
     /* 此处和其他几处不同，必须以可读写的方式打开 AOF 文件 
-	 * 因为后面可能需要对其进行部分修复动作 */    
+     * 因为后面可能需要对其进行部分修复动作 */    
     FILE *fp = fopen(aof_filepath, "r+");
     if (fp == NULL) {
         printf("Cannot open file %s: %s, aborting...\n", aof_filepath, strerror(errno));
